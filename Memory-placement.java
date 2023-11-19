@@ -1,286 +1,215 @@
-/*Assignment No. 4(Group_B)*/
-/*Write a program to simulate Memory placement strategies – best fit, first fit, next fit and worst fit.*/
+import java.util.*;
+class first_fit{
+    void First_Fit(int memory[] , int m, int process[] , int p)
+    {
+        //create an array to store the block id for each processes with size equal to number of processes
+        //and allocate -1 to it
+        int allocation[] = new int[p];
+        for(int i=0;i<p ;i++)
+            allocation[i] = -1;
 
-import java.util.Arrays;
-import java.util.Scanner;
-
-// Java implementation of First - Fit algorithm
-class first_fit
-{
-   // Method to allocate memory to
-   // blocks as per First fit algorithm
-   void firstFit(int blockSize[], int m, int processSize[], int n)
-   {
-       // Stores block id of the
-       // block allocated to a process
-       int allocation[] = new int[n];
-    
-       // Initially no block is assigned to any process
-       for (int i = 0; i < allocation.length; i++)
-           allocation[i] = -1;
-    
-       // pick each process and find suitable blocks
-       // according to its size ad assign to it
-       for (int i = 0; i < n; i++)
-       {
-           for (int j = 0; j < m; j++)
-           {
-               if (blockSize[j] >= processSize[i])
-               {
-                   // allocate block j to p[i] process
-                   allocation[i] = j;
-    
-                   // Reduce available memory in this block.
-                   blockSize[j] -= processSize[i];
-    
-                   break;
-               }
-           }
-       }
-    
-       System.out.println("Process No.	Process Size	Block no.");
-       for (int i = 0; i < n; i++)
-       {
-           System.out.print(" " + (i+1) + "		" + processSize[i] + "		");
-           if (allocation[i] != -1)
-               System.out.print(allocation[i] + 1);
-           else
-               System.out.print("Not Allocated");
-           System.out.println();
-       }
-   }
-
-}
-
-//Java program for next fit memory management algorithm
-class next_fit
-{
-
-   //Function to allocate memory to blocks as per Next fit
-   //algorithm
-   void NextFit(int blockSize[], int m, int processSize[], int n) {
-        // Stores block id of the block allocated to a
-        // process
-        int allocation[] = new int[n], j = 0;
-  
-        // Initially no block is assigned to any process
-        Arrays.fill(allocation, -1);
-  
-        // pick each process and find suitable blocks
-        // according to its size ad assign to it
-        for (int i = 0; i < n; i++) {
-  
-            // Do not start from beginning
-            int count =0;
-            while (j < m) {
-                count++;    //makes sure that for every process we traverse through entire array maximum once only.This avoids the problem of going into infinite loop if memory is not available
-                if (blockSize[j] >= processSize[i]) {
-  
-                    // allocate block j to p[i] process
+        //logic
+        for(int i=0;i<p;i++)
+        {
+            for(int j=0;j<m;j++)
+            {
+                if(memory[j] >= process[i])
+                {
                     allocation[i] = j;
-  
-                    // Reduce available memory in this block.
-                    blockSize[j] -= processSize[i];
-  
+                    memory[j] = memory[j]-process[i];
                     break;
                 }
-  
-                // mod m will help in traversing the blocks from
-                // starting block after we reach the end.
-                j = (j + 1) % m;
             }
         }
-  
-        System.out.println("Process No.	Process Size	Block no.");
-       for (int i = 0; i < n; i++)
-       {
-           System.out.print(" " + (i+1) + "		" + processSize[i] + "		");
-           if (allocation[i] != -1)
-               System.out.print(allocation[i] + 1);
-           else
-               System.out.print("Not Allocated");
-           System.out.println();
-       }
-    }
-}
-
-//Java implementation of worst - Fit algorithm
-
-class worst_fit
-{
-    // Method to allocate memory to blocks as per worst fit
-    // algorithm
-    void worstFit(int blockSize[], int m, int processSize[],int n)
-    {
-        // Stores block id of the block allocated to a
-        // process
-        int allocation[] = new int[n];
-     
-        // Initially no block is assigned to any process
-        for (int i = 0; i < allocation.length; i++)
-            allocation[i] = -1;
-     
-        // pick each process and find suitable blocks
-        // according to its size ad assign to it
-        for (int i=0; i<n; i++)
+        //printing result
+        System.out.println("Process No. || Process Size || Block No.");
+        for(int i=0;i<p ; i++)
         {
-            // Find the best fit block for current process
-            int wstIdx = -1;
-            for (int j=0; j<m; j++)
-            {
-                if (blockSize[j] >= processSize[i])
-                {
-                    if (wstIdx == -1)
-                        wstIdx = j;
-                    else if (blockSize[wstIdx] < blockSize[j])
-                        wstIdx = j;
-                }
-            }
-     
-            // If we could find a block for current process
-            if (wstIdx != -1)
-            {
-                // allocate block j to p[i] process
-                allocation[i] = wstIdx;
-     
-                // Reduce available memory in this block.
-                blockSize[wstIdx] -= processSize[i];
-            }
-        }
-     
-        System.out.println("Process No.	Process Size	Block no.");
-       for (int i = 0; i < n; i++)
-       {
-           System.out.print(" " + (i+1) + "		" + processSize[i] + "		");
-           if (allocation[i] != -1)
-               System.out.print(allocation[i] + 1);
-           else
-               System.out.print("Not Allocated");
-           System.out.println();
-       }
-    }
-}
-
-//Java implementation of Best - Fit algorithm
-
-class best_fit
-{
-    // Method to allocate memory to blocks as per Best fit
-    // algorithm
-    void bestFit(int blockSize[], int m, int processSize[], int n)
-    {
-        // Stores block id of the block allocated to a
-        // process
-        int allocation[] = new int[n];
-      
-        // Initially no block is assigned to any process
-        for (int i = 0; i < allocation.length; i++)
-            allocation[i] = -1;
-      
-     // pick each process and find suitable blocks
-        // according to its size ad assign to it
-        for (int i=0; i<n; i++)
-        {
-            // Find the best fit block for current process
-            int bestIdx = -1;
-            for (int j=0; j<m; j++)
-            {
-                if (blockSize[j] >= processSize[i])
-                {
-                    if (bestIdx == -1)
-                        bestIdx = j;
-                    else if (blockSize[bestIdx] > blockSize[j])
-                        bestIdx = j;
-                }
-            }
-      
-            // If we could find a block for current process
-            if (bestIdx != -1)
-            {
-                // allocate block j to p[i] process
-                allocation[i] = bestIdx;
-      
-                // Reduce available memory in this block.
-                blockSize[bestIdx] -= processSize[i];
-            }
-        }
-      
-        System.out.println("Process No.	Process Size	Block no.");
-        for (int i = 0; i < n; i++)
-        {
-            System.out.print("   " + (i+1) + "		" + processSize[i] + "		");
-            if (allocation[i] != -1)
-                System.out.print(allocation[i] + 1);
-            else
-                System.out.print("Not Allocated");
+            System.out.print(" "+(i+1)+" "+process[i]+" ");
+            if(allocation[i] != -1)
+                System.out.print(allocation[i]+1);
+            else 
+                System.out.print("Not allocated");
             System.out.println();
         }
     }
 }
-
-// Driver Code for All Algos:
-
-public class Main {
-   public static void main(String[] args){
-       first_fit first = new first_fit();
-       next_fit next = new next_fit();
-       worst_fit worst = new worst_fit();
-       best_fit best = new best_fit();
-       Scanner scan = new Scanner(System.in);
-       int choice;
-       System.out.println();
-       System.out.println("Enter the number of Blocks: ");
-       int m = scan.nextInt();
-       System.out.println("Enter the number of Processes: ");
-       int n = scan.nextInt();
-       
-       int blockSize[] = new int[m];
-       int processSize[] = new int[n];
-       
-       System.out.println("Enter the Size of all the blocks: ");
-       for (int i = 0; i<m; i++){
-           blockSize[i] = scan.nextInt();
+class best_fit{
+    void Best_Fit(int memory[] ,int m ,int process[],int p)
+    {
+        //declare an array allocation to hold the process ids
+        int allocate[] = new int[p];
+        for(int i=0;i<p;i++)
+            allocate[i]=-1;
+        //logic
+        for(int i=0 ; i<p ;i++)
+        {
+            int bestIndex = -1;
+            for(int j=0 ; j<m ;j++)
+            {
+                if(memory[j]>=process[i])
+                {
+                    if(bestIndex == -1)
+                        bestIndex = j;
+                    else if(memory[bestIndex] > memory[j])
+                        bestIndex = j;
+                }
+            }
+            if(bestIndex != -1)
+            {
+                allocate[i] = bestIndex;
+                memory[bestIndex] = memory[bestIndex] - process[i];
+            }
         }
-        
-        System.out.println("Enter the size of all processes: ");
-        for (int i = 0; i<n; i++){
-            processSize[i] = scan.nextInt();
+        //printing result
+        System.out.println("Process No. || Process Size || Block No.");
+        for(int i=0;i<p ; i++)
+        {
+            System.out.print(" "+(i+1)+" "+process[i]+" ");
+            if(allocate[i] != -1)
+                System.out.print(allocate[i]+1);
+            else 
+                System.out.print("Not allocated");
+            System.out.println();
         }
-        System.out.println();
-        while(true){
+    }
+}
+class next_fit{
+    void Next_Fit(int memory[] , int m,int process[] , int p)
+    {
+        int allocate[] = new int[p];
+        for(int i=0 ; i<p ;i++)
+        {
+            allocate[i] = -1;
+        }
+        //logic
+        int j=0;
+        for(int i=0;i<p;i++)
+        {
+            int count=0;
+            while(count<m)
+            {
+                if(memory[j]>=process[i])
+                {
+                    allocate[i] = j;
+                    memory[j] -= process[i];
+                    j=(j+1)%m;
+                    break;
+                }
+                j=(j+1)%m;
+                count++;
+            }
+        }
+        System.out.println("Process No. || Process Size || Block No.");
+        for(int i=0;i<p ; i++)
+        {
+            System.out.print(" "+(i+1)+" "+process[i]+" ");
+            if(allocate[i] != -1)
+                System.out.print(allocate[i]+1);
+            else 
+                System.out.print("Not allocated");
+            System.out.println();
+        }
+    }
+}
+class worst_fit{
+    void Worst_Fit(int memory[] , int m ,int process[], int p)
+    {
+        int allocate[] = new int[p];
+        for(int i=0;i<p;i++)
+            allocate[i] = -1;
+        //logic
+
+        for(int i=0 ;i<p;i++)
+        {
+            int worstIndex = -1;
+            for(int j=0 ; j< m ;j++)
+            {
+                if(memory[j] >= process[i])
+                {
+                    if(worstIndex == -1)
+                        worstIndex = j;
+                    else if(memory[worstIndex] < memory[j])
+                        worstIndex = j;
+                }
+            }
+            if(worstIndex != -1)
+            {
+                allocate[i] = worstIndex;
+                memory[worstIndex] -=process[i];
+            }
+        }
+
+        System.out.println("Process No. || Process Size || Block No.");
+        for(int i=0;i<p ; i++)
+        {
+            System.out.print(" "+(i+1)+" "+process[i]+" ");
+            if(allocate[i] != -1)
+                System.out.print(allocate[i]+1);
+            else 
+                System.out.print("Not allocated");
+            System.out.println();
+        }
+    }
+}
+public class practice1 {
+    public static void main(String args[])
+    {
+        first_fit obj1 = new first_fit();
+        best_fit obj2 = new best_fit();
+        next_fit obj3 = new next_fit();
+        worst_fit obj4 = new worst_fit();
+        Scanner sc = new Scanner(System.in);
+        int num_pro , num_mem ; 
+        System.out.println("Enter The number of Memory Blocks :");
+        num_mem = sc.nextInt();
+        System.out.println("Enter The number of Processes : ");
+        num_pro = sc.nextInt();
+        int memory[] = new int[num_mem];
+        int processes[] = new int[num_pro];
+        System.out.println("Enter the Sizes of each memory Blocks: ");
+        for(int i=0 ;i<num_mem;i++)
+        {
+            memory[i]=sc.nextInt();
+        }
+        System.out.println("Enter the Sizes of each processes: ");
+        for(int i=0 ;i<num_pro;i++)
+        {
+            processes[i]=sc.nextInt();
+        }
+        while(true)
+        {
         System.out.println("Menu");
-        System.out.println("1. First Fit ");
-        System.out.println("2. Next Fit");
-        System.out.println("3. Worst Fit");
-        System.out.println("4. Best Fit");
-        System.out.println("5. exit");
-        System.out.println("Select the algorithm you want to implement: ");
-        choice = scan.nextInt();
-        
-           switch(choice){
-               case 1:
-                   System.out.println("First Fit Output");
-                   first.firstFit(blockSize, m, processSize, n);
-                   break;
-               case 2:
-                   System.out.println("Next Fit Output");
-                   next.NextFit(blockSize, m, processSize, n);
-                   break;
-               case 3:
-                   System.out.println("Worst Fit Output");
-                   worst.worstFit(blockSize, m, processSize, n);
-                   break;
-               case 4:
-                   System.out.println("Best Fit Output");
-                   best.bestFit(blockSize, m, processSize, n);
-                   break;
-               case 5:
-                   System.out.println("Exiting the code...");
-                   return;
-               default:
-                   System.out.println("Invalid option");
-           }
-       }
-   }
-
+        System.out.println("\t1. First Fit");
+        System.out.println("\t2. Best Fit");
+        System.out.println("\t3. Next Fit");
+        System.out.println("\t4. Worst Fit");
+        System.out.println("\t5. Exit");
+        int choice;
+        choice = sc.nextInt();
+        switch (choice) {
+            case 1:
+            System.out.println("First Fit Output");
+            obj1.First_Fit(memory ,num_mem,processes,num_pro);
+                break;
+            case 2:
+            System.out.println("First Fit Output");
+            obj2.Best_Fit(memory ,num_mem,processes,num_pro);
+                break;
+            case 3:
+            System.out.println("Next Fit Output");
+            obj3.Next_Fit(memory ,num_mem,processes,num_pro);
+                break;
+            case 4:
+            System.out.println("Worst Fit Output");
+            obj4.Worst_Fit(memory ,num_mem,processes,num_pro);
+                break;
+            case 5:
+                return;
+            default:
+                System.out.println("Wrong input");
+                break;
+        }
+        }
+    }
 }
